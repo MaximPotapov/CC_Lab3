@@ -1,0 +1,27 @@
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-vpc --cidr-block 10.0.0.0/16
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-tags --resources vpc-0192ba70db6ca2ac1 --tags Key=Name,Value=AEX3-VPC
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-internet-gateway
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 attach-internet-gateway --vpc-id vpc-0192ba70db6ca2ac1 --internet-gateway-id igw-0dc528592aa369c59
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-tags --resources igw-0dc528592aa369c59 --tags Key=Name,Value=AXE3-IGW
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-subnet --cidr-block 10.0.1.0/24 --vpc-id vpc-0192ba70db6ca2ac1
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 modify-subnet-attribute --subnet-id subnet-045d606286a638967 --map-public-ip-on-launch
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-tags --resources subnet-045d606286a638967 --tags Key=Name,Value=AEX3-Subnet
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-route-table --vpc-id vpc-0192ba70db6ca2ac1
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-tags --resources rtb-0ff060d54822182c3 --tags Key=Name,Value=AEX3-RT
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-route --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0dc528592aa369c59 --route-table-id rtb-0ff060d54822182c3
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 associate-route-table --route-table-id rtb-0ff060d54822182c3 --subnet-id subnet-045d606286a638967
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-key-pair --key-name AEX3Key_query --query 'KeyMaterial' --output text > AEX3Key_query
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % cat AEX3Key_query 
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-security-group --group-name AEX3SG --description "Security group AEX3" --vpc-id vpc-0192ba70db6ca2ac1
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 authorize-security-group-ingress --group-id sg-089f600c703466623 --protocol tcp --port 22 --cidr 0.0.0.0/0
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 authorize-security-group-ingress --group-id sg-089f600c703466623 --protocol tcp --port 80 --cidr 0.0.0.0/0
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 authorize-security-group-ingress --group-id sg-089f600c703466623 --protocol tcp --port 443 --cidr 0.0.0.0/0
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 modify-subnet-attribute --subnet-id subnet-045d606286a638967   
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 modify-subnet-attribute --subnet-id subnet-045d606286a638967 --map-public-ip-on-launch   
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 run-instances --image-id ami-09558250a3419e7d0 --count 1 --instance-type t2.micro --key-name AEX3Key_query --security-group-ids sg-089f600c703466623 --subnet-id subnet-045d606286a638967  --user-data file://apache.sh
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-tags --resources i-0f78d7eeaab492737 --tags Key=Name,Value=AEX3-WebServer
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % aws ec2 create-image --instance-id i-0f78d7eeaab492737 --name "Security group AEX3" --description "Image (Apache Web Server)"
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % ssh -i AEX3Key_query ec2-user@3.135.249.36
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % chmod 400 AEX3Key_query
+(base) mpotapov@MacBook-Pro-admin СС_Lab3.2 % ssh -i AEX3Key_query ec2-user@3.135.249.36
+
